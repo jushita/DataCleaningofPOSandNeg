@@ -14,7 +14,6 @@ class ManipulateData():
 
         print("Done")
 
-
     def rowSplit(self, _file, num_row, num_files):
         file_counter = 0;
          #open file
@@ -35,3 +34,14 @@ class ManipulateData():
                 new_file.write(line)
 
         print("Done!")
+
+    def addCommonColumn(self, _file, col_data):
+        with open(_file, "r") as file:
+            data = file.readlines();
+
+
+        for i, line in enumerate(data):
+            data[i] = line.rstrip('\n') + "\t" + col_data + "\n"
+
+        with open(_file, "w") as file:
+            file.writelines(data)
