@@ -5,17 +5,9 @@ Created on Mon Jun 19 10:34:32 2017
 @author: Jrahman
 """
 
-def pos_column_split(file):
-    newFile = open("Positives.txt", "w")
-    with open(file, "r") as curr_file:
-        for columns in curr_file:
-            splited_columns = columns.split("\t")
-            input_data = ("\t".join((splited_columns[0], splited_columns[1])))
-            newFile.write(input_data + "\n")
+from ManipulateData import ManipulateData
 
-    newFile.close()
-    
-    print("Done")
-pos_column_split("pos_MIPS_complexes.txt")
+manipulate = ManipulateData();
 
-#" ".join(splited_columns[0:2]+".txt")
+manipulate.columnSplit("pos_MIPS_complexes.txt", "positives")
+manipulate.columnSplit("L_neg.txt", "negatives");
