@@ -10,4 +10,6 @@ from ManipulateData import ManipulateData
 manipulate = ManipulateData();
 
 manipulate.columnSplit("pos_MIPS_complexes.txt", "positives")
-manipulate.columnSplit("L_neg.txt", "negatives");
+manipulate.columnSplit("L_neg.txt", "negatives")
+manipulate.rowSplit("positives.txt", 500, 1)
+manipulate.rowSplit("negatives.txt", 150000, 1)
