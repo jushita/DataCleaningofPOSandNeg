@@ -45,3 +45,14 @@ class ManipulateData():
 
         with open(_file, "w") as file:
             file.writelines(data)
+
+    def combineFiles(self, posFile, negFile):
+        with open(posFile, "r") as posNewFile:
+            data1 = posNewFile.readlines()
+
+        with open(negFile, "r") as negNewFile:
+            data2 = negNewFile.readlines()
+
+        with open("combined_files.txt", "w") as file:
+            file.writelines(data1)
+            file.writelines(data2)
