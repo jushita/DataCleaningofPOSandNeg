@@ -2,3 +2,5 @@ __pycache__
 negatives*.txt
 positives*.txt
 combined_files.txt
+L_PIP
+matched_likelihood_ratios.txt
