@@ -62,41 +62,47 @@ class ManipulateData():
         #read lines of file to list
         with open(_file, "r") as file:
             for i, line in enumerate(file):
+
                 line = line.rstrip("\n")
                 split_line = line.split('\t')
 
                 file_protein1 = "L_PIP/" + split_line[0] + ".txt"
                 file_protein2 = "L_PIP/" + split_line[1] + ".txt"
 
+                lpip_found = False
+
                 if os.path.isfile(file_protein1):
                     with open(file_protein1) as file:
-                        for line in file:
+                        for i, line in enumerate(file):
                             other_protein = line.split("\t")[0]
                             if split_line[1] == other_protein:
                                 lpip = line.split('\t')[5]
                                 split_line.append(lpip.rstrip('\n'))
-                elif os.path.isfile(file_protein2):
+                                lpip_found = True
+                                break
+
+                if not lpip_found and os.path.isfile(file_protein2):
                     with open(file_protein2) as file:
                         for line in file:
                             other_protein = line.split("\t")[0]
                             if split_line[0] == other_protein:
                                 lpip = line.split('\t')[5]
                                 split_line.append(lpip.rstrip('\n'))
-                else:
-                    split_line.append("0.00")
+                                lpip_found = True
+                                break
 
-                new_file.write("\t".join(split_line) + "\n")
+                if lpip_found:
+                    new_file.write("\t".join(split_line) + "\n")
 
-    print ("Done")
+        print ("Done")
 
     def predictedLikelihoodRatioVal(self, _file, val):
 
-        predicted_likelihoo_value_column_added = open("pr_lr_file" + ".txt", "w")
+        newFile = open("predicted_likelihood_value_column_added_" + str(val) + ".txt", "w")
 
         with open(_file, "r") as file:
             for i, line in enumerate(file):
-                if (i==5):
-                    break
+
             #storing each line of the file in a list then isolating 4th column
                 line = line.rstrip("\n")
                 split_line = line.split('\t')[3]
@@ -114,4 +120,6 @@ class ManipulateData():
                     split_line = str(split_line)
                     lr_prLrval = line + "\t" + prLrval
                 #writing in a new file
-                predicted_likelihoo_value_column_added.write(lr_prLrval + "\n")
+                newFile.write(lr_prLrval + "\n")
+
+        print("Done")
