@@ -39,7 +39,6 @@ class ManipulateData():
         with open(_file, "r") as file:
             data = file.readlines();
 
-
         for i, line in enumerate(data):
             data[i] = line.rstrip('\n') + "\t" + col_data + "\n"
 
@@ -84,8 +83,35 @@ class ManipulateData():
                                 lpip = line.split('\t')[5]
                                 split_line.append(lpip.rstrip('\n'))
                 else:
-                    split_line.append("Null")
+                    split_line.append("0.00")
 
                 new_file.write("\t".join(split_line) + "\n")
 
     print ("Done")
+
+    def predictedLikelihoodRatioVal(self, _file, val):
+
+        predicted_likelihoo_value_column_added = open("pr_lr_file" + ".txt", "w")
+
+        with open(_file, "r") as file:
+            for i, line in enumerate(file):
+                if (i==5):
+                    break
+            #storing each line of the file in a list then isolating 4th column
+                line = line.rstrip("\n")
+                split_line = line.split('\t')[3]
+                #converting the 4th column value from str to float
+                split_line = float(split_line)
+                #comparing the actual likelihood value with a threshold and writing the predicted pos or neg value
+                if (split_line >= val):
+                    prLrval = "+ve"
+                    #converting float into str again
+                    split_line = str(split_line)
+                    #adding the value to the previous list with all 4 columns
+                    lr_prLrval = line + "\t" + prLrval
+                else:
+                    prLrval = "-ve"
+                    split_line = str(split_line)
+                    lr_prLrval = line + "\t" + prLrval
+                #writing in a new file
+                predicted_likelihoo_value_column_added.write(lr_prLrval + "\n")

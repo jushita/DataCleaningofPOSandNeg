@@ -22,4 +22,4 @@ manipulate.combineFiles("positives_500_1.txt", "negatives_150000_1.txt")
 
 manipulate.matchLikelihoodRatio('combined_files.txt')
 '''
-manipulate.matchLikelihoodRatio('combined_files.txt')
+manipulate.predictedLikelihoodRatioVal('matched_likelihood_ratios.txt', 10)
