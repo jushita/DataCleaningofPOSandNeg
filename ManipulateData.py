@@ -161,12 +161,4 @@ class ManipulateData():
 
             cmList= [tp_counter, fn_counter, fp_counter, tn_counter]
             cmList = str(cmList)
-            print (tp_counter)
-            #print("\n")
-            print (fn_counter)
-            #print("\n")
-            print (fp_counter)
-            #print("\n")
-            print (tn_counter)
-            #print("\n")
             newFile_1.write(cmList)

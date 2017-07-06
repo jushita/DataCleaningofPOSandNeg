@@ -6,3 +6,5 @@ L_PIP
 matched_likelihood_ratios.txt
 pr_lr_file.txt
 predicted_likelihoo_value_column_added*.txt
+matrix_clc_col_added*.txt
+counter_calculation*.txt
