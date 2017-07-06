@@ -123,3 +123,50 @@ class ManipulateData():
                 newFile.write(lr_prLrval + "\n")
 
         print("Done")
+
+    def matrixCalculationCol(self, _file):
+        newFile = open("matrix_clc_col_added.txt" , "w")
+        newFile_1 = open("counter_calculation.txt" , "w")
+        tp_counter = 0
+        fn_counter = 0
+        fp_counter = 0
+        tn_counter = 0
+
+
+        with open(_file, "r") as file:
+            for i, line in enumerate(file):
+
+                line = line.rstrip("\n")
+                actual = line.split('\t')[2]
+                predicted = line.split('\t')[4]
+
+                if (actual == "+ve" and predicted == "+ve"):
+                    tp = "TP"
+                    tp_counter += 1
+                    newCol = line + "\t" + tp
+                if (actual == "+ve" and predicted == "-ve"):
+                    fn = "FN"
+                    fn_counter += 1
+                    newCol = line + "\t" + fn
+                if (actual == "-ve" and predicted == "+ve"):
+                    fp = "FP"
+                    fp_counter += 1
+                    newCol = line + "\t" + fp
+                if (actual == "-ve" and predicted == "-ve"):
+                    tn = "TN"
+                    tn_counter += 1
+                    newCol = line + "\t" + tn
+
+                newFile.write(newCol+ "\n")
+
+            cmList= [tp_counter, fn_counter, fp_counter, tn_counter]
+            cmList = str(cmList)
+            print (tp_counter)
+            #print("\n")
+            print (fn_counter)
+            #print("\n")
+            print (fp_counter)
+            #print("\n")
+            print (tn_counter)
+            #print("\n")
+            newFile_1.write(cmList)
