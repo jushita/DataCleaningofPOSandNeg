@@ -182,10 +182,14 @@ class ManipulateData():
     def matrixCalculation(self, _files):
         #newFile = open("matrix_clc_col_added.txt" , "w")
         newFile_1 = open("counter_calculation.txt" , "w")
-        tp_counter = 0
-        fn_counter = 0
-        fp_counter = 0
-        tn_counter = 0
+        tp = 0
+        fn = 0
+        fp = 0
+        tn = 0
+        actual_yes = 0
+        actual_no = 0
+        tpr = 0
+        fpr = 0
         cm_lists = list()*len(_files)
 
         #storing each line of the file in a list then isolating 3rd and 5th column
@@ -201,26 +205,31 @@ class ManipulateData():
                 #checking which one is tp/fp/tn/fn
                     if (actual == "+ve" and predicted == "+ve"):
                         #tp = "TP"
-                        tp_counter += 1
+                        tp += 1
                         #newLine = line + "\t" + tp
                     elif (actual == "+ve" and predicted == "-ve"):
                         #fn = "FN"
-                        fn_counter += 1
+                        fn += 1
                         #newLine = line + "\t" + fn
                     elif (actual == "-ve" and predicted == "+ve"):
                         #fp = "FP"
-                        fp_counter += 1
+                        fp += 1
                         #newLine = line + "\t" + fp
                     else:
                         #tn = "TN"
-                        tn_counter += 1
+                        tn += 1
                         #newLine = line + "\t" + tn   #adding tp/fp/tn/fn to the previous line
 
                 #writing the final list
                 #newFile.write(newLine + "\n")
 
             #storing value of each in a list
-            cm_lists.append([str(tp_counter), str(fn_counter), str(fp_counter), str(tn_counter)])
+            actual_yes=tp+fn
+            actual_no=fp+tn
+            tpr = tp/actual_yes
+            fpr = fp/actual_no
+
+            cm_lists.append([str(tp), str(fn), str(fp), str(tn), str(actual_yes), str(actual_no), str(tpr),str(fpr)])
 
         for cm_list in cm_lists:
             newFile_1.write("\t".join(cm_list) + "\n")
