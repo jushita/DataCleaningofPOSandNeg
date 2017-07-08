@@ -1,4 +1,11 @@
 import os, glob
+import plotly
+import plotly.figure_factory as ff
+from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
+from plotly.graph_objs import *
+
+plotly.offline.init_notebook_mode(connected=True)
+
 
 class ManipulateData():
     def columnSplit(self, file, new_file):
@@ -132,6 +139,7 @@ class ManipulateData():
             files.append(file)
 
         return files
+
     def matrixCalculationCol(self, _file):
         newFile = open("matrix_clc_col_added.txt" , "w")
         newFile_1 = open("counter_calculation.txt" , "w")
@@ -235,3 +243,31 @@ class ManipulateData():
             newFile_1.write("\t".join(cm_list) + "\n")
 
         print("Done!")
+
+    def plotlyTable(self, _file):
+
+        with open(_file, "r") as file:
+            for i, line in enumerate(file):
+                line = line.rstrip("\n")
+                if (i==0):
+                    data_matrix = [['True Positive (TP)','False Negative (FN)','False Positive (FP)', 'True Negative (TN)', 'Actual Yes', 'Actual No', 'True Posive Rate (TPR)', 'False Positive Rate (FPR)'],
+                    line.split("\t")]
+
+        table = ff.create_table(data_matrix)
+        plotly.offline.plot(table, filename='simple_table')
+        print ("Done")
+'''
+
+    data_matrix = [['Country', 'Year', 'Population'],
+               ['United States', 2000, 282200000],
+               ['Canada', 2000, 27790000],
+               ['United States', 2005, 295500000],
+               ['Canada', 2005, 32310000],
+               ['United States', 2010, 309000000],
+               ['Canada', 2010, 34000000]]
+
+    table = ff.create_table(data_matrix)
+    plotly.offline.plot(table, filename='simple_table')
+
+    print("done")
+'''
