@@ -122,11 +122,11 @@ class ManipulateData():
                         #converting float into str again
                         split_line = str(split_line)
                         #adding the value to the previous list with all 4 columns
-                        lr_prLrval = line + "\t" + prLrval
+                        lr_prLrval =line + "\t" + prLrval
                     else:
                         prLrval = "-ve"
                         split_line = str(split_line)
-                        lr_prLrval = line + "\t" + prLrval
+                        lr_prLrval =line + "\t" + prLrval
                     #writing in a new file
                     newFile.write(lr_prLrval + "\n")
 
@@ -212,26 +212,15 @@ class ManipulateData():
                     predicted = line.split('\t')[4]
                 #checking which one is tp/fp/tn/fn
                     if (actual == "+ve" and predicted == "+ve"):
-                        #tp = "TP"
-                        tp += 1
-                        #newLine = line + "\t" + tp
+                            tp += 1
                     elif (actual == "+ve" and predicted == "-ve"):
-                        #fn = "FN"
                         fn += 1
-                        #newLine = line + "\t" + fn
                     elif (actual == "-ve" and predicted == "+ve"):
-                        #fp = "FP"
                         fp += 1
-                        #newLine = line + "\t" + fp
                     else:
-                        #tn = "TN"
                         tn += 1
                         #newLine = line + "\t" + tn   #adding tp/fp/tn/fn to the previous line
 
-                #writing the final list
-                #newFile.write(newLine + "\n")
-
-            #storing value of each in a list
             actual_yes=tp+fn
             actual_no=fp+tn
             tpr = tp/actual_yes
@@ -245,13 +234,22 @@ class ManipulateData():
         print("Done!")
 
     def plotlyTable(self, _file):
+        new_list= list()*len(_file)
+        first_line ='True Positive (TP)\t'   'False Negative (FN)\t'   'False Positive (FP)\t'   'True Negative (TN)\t'    'Actual Yes\t'    'Actual No\t' 'True Posive Rate (TPR)\t'    'False Positive Rate (FPR)\n'
+        first_line = first_line.rstrip("\n")
+        first_line=first_line.split("\t")
 
+        new_list.append(first_line)
         with open(_file, "r") as file:
             for i, line in enumerate(file):
+                #print (line)
                 line = line.rstrip("\n")
-                if (i==0):
-                    data_matrix = [['True Positive (TP)','False Negative (FN)','False Positive (FP)', 'True Negative (TN)', 'Actual Yes', 'Actual No', 'True Posive Rate (TPR)', 'False Positive Rate (FPR)'],
-                    line.split("\t")]
+                line = line.split("\t")
+                new_list.append(line)
+            data_matrix= new_list
+
+                    #data_matrix = [['True Positive (TP)','False Negative (FN)','False Positive (FP)', 'True Negative (TN)', 'Actual Yes', 'Actual No', 'True Posive Rate (TPR)', 'False Positive Rate (FPR)'],
+            #print(new_list)            #line.split("\t")]
 
         table = ff.create_table(data_matrix)
         plotly.offline.plot(table, filename='simple_table')
