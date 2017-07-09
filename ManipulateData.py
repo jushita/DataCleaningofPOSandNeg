@@ -1,4 +1,12 @@
-import os
+import os, glob
+import plotly
+import plotly.figure_factory as ff
+from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
+from plotly.graph_objs import *
+import plotly.graph_objs as go
+
+plotly.offline.init_notebook_mode(connected=True)
+
 
 class ManipulateData():
     def columnSplit(self, file, new_file):
@@ -96,33 +104,44 @@ class ManipulateData():
 
         print ("Done")
 
-    def predictedLikelihoodRatioVal(self, _file, val):
+    def predictedLikelihoodRatioVal(self, _file):
+        values = [0.1,1,10,20,30,40,50,60,70,80,90,100,200,
+        300,400,500,600,700,800,900,1000,10000,20000,30000,40000,50000]
+        for val in values:
+            newFile = open("predicted_likelihood_value_column_added_" + str(val) + ".txt", "w")
 
-        newFile = open("predicted_likelihood_value_column_added_" + str(val) + ".txt", "w")
+            with open(_file, "r") as file:
 
-        with open(_file, "r") as file:
-            for i, line in enumerate(file):
+                for i, line in enumerate(file):
 
-            #storing each line of the file in a list then isolating 4th column
-                line = line.rstrip("\n")
-                split_line = line.split('\t')[3]
-                #converting the 4th column value from str to float
-                split_line = float(split_line)
-                #comparing the actual likelihood value with a threshold and writing the predicted pos or neg value
-                if (split_line >= val):
-                    prLrval = "+ve"
-                    #converting float into str again
-                    split_line = str(split_line)
-                    #adding the value to the previous list with all 4 columns
-                    lr_prLrval = line + "\t" + prLrval
-                else:
-                    prLrval = "-ve"
-                    split_line = str(split_line)
-                    lr_prLrval = line + "\t" + prLrval
-                #writing in a new file
-                newFile.write(lr_prLrval + "\n")
+                #storing each line of the file in a list then isolating 4th column
+                    line = line.rstrip("\n")
+                    split_line = line.split('\t')[3]
+                    #converting the 4th column value from str to float
+                    split_line = float(split_line)
+                    #comparing the actual likelihood value with a threshold and writing the predicted pos or neg value
+                    if (split_line >= val):
+                        prLrval = "+ve"
+                        #converting float into str again
+                        split_line = str(split_line)
+                        #adding the value to the previous list with all 4 columns
+                        lr_prLrval =line + "\t" + prLrval
+                    else:
+                        prLrval = "-ve"
+                        split_line = str(split_line)
+                        lr_prLrval =line + "\t" + prLrval
+                    #writing in a new file
+                    newFile.write(lr_prLrval + "\n")
 
         print("Done")
+
+    def getPredeictedLikelihoodFiles(self):
+        files = list()
+
+        for file in glob.glob("predicted_likelihood_value_column_added_*.txt"):
+            files.append(file)
+
+        return files
 
     def matrixCalculationCol(self, _file):
         newFile = open("matrix_clc_col_added.txt" , "w")
@@ -132,33 +151,115 @@ class ManipulateData():
         fp_counter = 0
         tn_counter = 0
 
-
+        #storing each line of the file in a list then isolating 3rd and 5th column
         with open(_file, "r") as file:
             for i, line in enumerate(file):
 
                 line = line.rstrip("\n")
+                    #isolating actual labels
                 actual = line.split('\t')[2]
+                    #isolating predicted labels
                 predicted = line.split('\t')[4]
-
+                #checking which one is tp/fp/tn/fn
                 if (actual == "+ve" and predicted == "+ve"):
                     tp = "TP"
                     tp_counter += 1
-                    newCol = line + "\t" + tp
-                if (actual == "+ve" and predicted == "-ve"):
+                    newLine = line + "\t" + tp
+                elif (actual == "+ve" and predicted == "-ve"):
                     fn = "FN"
                     fn_counter += 1
-                    newCol = line + "\t" + fn
-                if (actual == "-ve" and predicted == "+ve"):
+                    newLine = line + "\t" + fn
+                elif (actual == "-ve" and predicted == "+ve"):
                     fp = "FP"
                     fp_counter += 1
-                    newCol = line + "\t" + fp
-                if (actual == "-ve" and predicted == "-ve"):
+                    newLine = line + "\t" + fp
+                else:
                     tn = "TN"
                     tn_counter += 1
-                    newCol = line + "\t" + tn
+                    newLine = line + "\t" + tn   #adding tp/fp/tn/fn to the previous line
 
-                newFile.write(newCol+ "\n")
+                #writing the final list
+                newFile.write(newLine + "\n")
 
-            cmList= [tp_counter, fn_counter, fp_counter, tn_counter]
-            cmList = str(cmList)
-            newFile_1.write(cmList)
+            #storing value of each in a list
+
+            print (tp_counter)
+            print (tn_counter)
+            print (fn_counter)
+            print(fp_counter)
+
+        print("Done!")
+
+    def matrixCalculation(self, _files):
+        #newFile = open("matrix_clc_col_added.txt" , "w")
+        newFile_1 = open("counter_calculation.txt" , "w")
+        tp = 0
+        fn = 0
+        fp = 0
+        tn = 0
+        actual_yes = 0
+        actual_no = 0
+        tpr = 0
+        fpr = 0
+        cm_lists = list()*len(_files)
+
+        #storing each line of the file in a list then isolating 3rd and 5th column
+        for _file in _files:
+            with open(_file, "r") as file:
+                for i, line in enumerate(file):
+
+                    line = line.rstrip("\n")
+                    #isolating actual labels
+                    actual = line.split('\t')[2]
+                    #isolating predicted labels
+                    predicted = line.split('\t')[4]
+                #checking which one is tp/fp/tn/fn
+                    if (actual == "+ve" and predicted == "+ve"):
+                            tp += 1
+                    elif (actual == "+ve" and predicted == "-ve"):
+                        fn += 1
+                    elif (actual == "-ve" and predicted == "+ve"):
+                        fp += 1
+                    else:
+                        tn += 1
+                        #newLine = line + "\t" + tn   #adding tp/fp/tn/fn to the previous line
+
+            actual_yes=tp+fn
+            actual_no=fp+tn
+            tpr = tp/actual_yes
+            fpr = fp/actual_no
+
+            cm_lists.append([str(tp), str(fn), str(fp), str(tn), str(actual_yes), str(actual_no), str(tpr),str(fpr)])
+
+        for cm_list in cm_lists:
+            newFile_1.write("\t".join(cm_list) + "\n")
+
+        print("Done!")
+
+    def plotlyTable(self, _file):
+        new_list= list()*len(_file)
+        first_line ='Values\t' 'True Positive (TP)\t'   'False Negative (FN)\t'   'False Positive (FP)\t'   'True Negative (TN)\t'    'Actual Yes\t'    'Actual No\t' 'True Posive Rate (TPR)\t'    'False Positive Rate (FPR)\n'
+        first_line = first_line.rstrip("\n")
+        first_line=first_line.split("\t")
+
+        new_list.append(first_line)
+        with open(_file, "r") as file:
+            for i, line in enumerate(file):
+                #print (line)
+                line = line.rstrip("\n")
+                line = line.split("\t")
+                data_matrix.append(line)
+
+        table = ff.create_table(data_matrix)
+        plotly.offline.plot(table, filename='Confusion Matrix Values')
+        print ("Done")
+
+    def rocGraph(self):
+        rx= [0.5534, 0.3232, 0.1660, 0.132]
+        ry= [0.44, 0.88, 0.11, 0.23]
+        trace = go.Scatter(
+        x=rx,
+        y=ry
+        )
+        data=[trace]
+        plotly.offline.plot(data, filename="test")
