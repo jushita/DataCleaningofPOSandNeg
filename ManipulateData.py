@@ -3,6 +3,7 @@ import plotly
 import plotly.figure_factory as ff
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 from plotly.graph_objs import *
+import plotly.graph_objs as go
 
 plotly.offline.init_notebook_mode(connected=True)
 
@@ -103,7 +104,9 @@ class ManipulateData():
 
         print ("Done")
 
-    def predictedLikelihoodRatioVal(self, _file, values):
+    def predictedLikelihoodRatioVal(self, _file):
+        values = [0.1,1,10,20,30,40,50,60,70,80,90,100,200,
+        300,400,500,600,700,800,900,1000,10000,20000,30000,40000,50000]
         for val in values:
             newFile = open("predicted_likelihood_value_column_added_" + str(val) + ".txt", "w")
 
@@ -235,7 +238,7 @@ class ManipulateData():
 
     def plotlyTable(self, _file):
         new_list= list()*len(_file)
-        first_line ='True Positive (TP)\t'   'False Negative (FN)\t'   'False Positive (FP)\t'   'True Negative (TN)\t'    'Actual Yes\t'    'Actual No\t' 'True Posive Rate (TPR)\t'    'False Positive Rate (FPR)\n'
+        first_line ='Values\t' 'True Positive (TP)\t'   'False Negative (FN)\t'   'False Positive (FP)\t'   'True Negative (TN)\t'    'Actual Yes\t'    'Actual No\t' 'True Posive Rate (TPR)\t'    'False Positive Rate (FPR)\n'
         first_line = first_line.rstrip("\n")
         first_line=first_line.split("\t")
 
@@ -245,27 +248,18 @@ class ManipulateData():
                 #print (line)
                 line = line.rstrip("\n")
                 line = line.split("\t")
-                new_list.append(line)
-            data_matrix= new_list
-
-                    #data_matrix = [['True Positive (TP)','False Negative (FN)','False Positive (FP)', 'True Negative (TN)', 'Actual Yes', 'Actual No', 'True Posive Rate (TPR)', 'False Positive Rate (FPR)'],
-            #print(new_list)            #line.split("\t")]
+                data_matrix.append(line)
 
         table = ff.create_table(data_matrix)
-        plotly.offline.plot(table, filename='simple_table')
+        plotly.offline.plot(table, filename='Confusion Matrix Values')
         print ("Done")
-'''
 
-    data_matrix = [['Country', 'Year', 'Population'],
-               ['United States', 2000, 282200000],
-               ['Canada', 2000, 27790000],
-               ['United States', 2005, 295500000],
-               ['Canada', 2005, 32310000],
-               ['United States', 2010, 309000000],
-               ['Canada', 2010, 34000000]]
-
-    table = ff.create_table(data_matrix)
-    plotly.offline.plot(table, filename='simple_table')
-
-    print("done")
-'''
+    def rocGraph(self):
+        rx= [0.5534, 0.3232, 0.1660, 0.132]
+        ry= [0.44, 0.88, 0.11, 0.23]
+        trace = go.Scatter(
+        x=rx,
+        y=ry
+        )
+        data=[trace]
+        plotly.offline.plot(data, filename="test")
