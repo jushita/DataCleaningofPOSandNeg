@@ -21,10 +21,10 @@ manipulate.rowSplit("negatives.txt", 150000, 1)
 manipulate.combineFiles("positives_500_1.txt", "negatives_150000_1.txt")
 
 manipulate.matchLikelihoodRatio('combined_files.txt')
-
+'''
 
 manipulate.predictedLikelihoodRatioVal('matched_likelihood_ratios.txt')
-'''
+
 #manipulate.matrixCalculationCol("predicted_likelihood_value_column_added_0.1.txt")#this is just for validation. Run this to validate for each file created if needed
 
 manipulate.matrixCalculation(manipulate.getPredeictedLikelihoodFiles())

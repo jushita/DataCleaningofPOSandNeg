@@ -229,6 +229,9 @@ class ManipulateData():
             tpr = tp/actual_yes
             fpr = fp/actual_no
 
+            values = [0.1,1,10,20,30,40,50,60,70,80,90,100,200,
+            300,400,500,600,700,800,900,1000,10000,20000,30000,40000,50000]
+
             cm_lists.append([str(tp), str(fn), str(fp), str(tn), str(actual_yes), str(actual_no), str(tpr),str(fpr)])
 
         for cm_list in cm_lists:
@@ -238,7 +241,8 @@ class ManipulateData():
 
     def plotlyTable(self, _file):
         new_list= list()*len(_file)
-        first_line ='Values\t' 'True Positive (TP)\t'   'False Negative (FN)\t'   'False Positive (FP)\t'   'True Negative (TN)\t'    'Actual Yes\t'    'Actual No\t' 'True Posive Rate (TPR)\t'    'False Positive Rate (FPR)\n'
+        print(len(_file))
+        first_line ='True Positive (TP)\t'   'False Negative (FN)\t'   'False Positive (FP)\t'   'True Negative (TN)\t'    'Actual Yes\t'    'Actual No\t' 'True Posive Rate (TPR)\t'    'False Positive Rate (FPR)\n'
         first_line = first_line.rstrip("\n")
         first_line=first_line.split("\t")
 
@@ -248,7 +252,8 @@ class ManipulateData():
                 #print (line)
                 line = line.rstrip("\n")
                 line = line.split("\t")
-                data_matrix.append(line)
+                new_list.append(line)
+            data_matrix=new_list
 
         table = ff.create_table(data_matrix)
         plotly.offline.plot(table, filename='Confusion Matrix Values')
