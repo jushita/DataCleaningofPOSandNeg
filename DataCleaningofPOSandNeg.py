@@ -29,7 +29,7 @@ manipulate.matrixCalculationCol("predicted_likelihood_value_column_added_0.1.txt
 manipulate.matrixCalculation(manipulate.getPredeictedLikelihoodFiles())
 
 manipulate.valCol("counter_calculation.txt")
-'''
-manipulate.plotlyTable("Confusion Matrix Table.txt")
 
-#manipulate.rocGraph()
+manipulate.plotlyTable("Confusion Matrix Table.txt")
+'''
+manipulate.rocGraph("Confusion Matrix Table.txt")

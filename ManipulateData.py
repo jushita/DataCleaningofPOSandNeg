@@ -246,7 +246,7 @@ class ManipulateData():
     def plotlyTable(self, _file):
         new_list= list()*len(_file)
         print(len(_file))
-        first_line ='Values\t'  'True Positive (TP)\t'   'False Negative (FN)\t'   'False Positive (FP)\t'   'True Negative (TN)\t'    'Actual Yes\t'    'Actual No\t' 'True Posive Rate (TPR)\t'    'False Positive Rate (FPR)\n'
+        first_line ='Likelihood\t'  'True Positive (TP)\t'   'False Negative (FN)\t'   'False Positive (FP)\t'   'True Negative (TN)\t'    'Actual Yes\t'    'Actual No\t' 'True Posive Rate (TPR)\t'    'False Positive Rate (FPR)\n'
         first_line = first_line.rstrip("\n")
         first_line=first_line.split("\t")
 
@@ -263,12 +263,28 @@ class ManipulateData():
         plotly.offline.plot(table, filename='Confusion Matrix Values')
         print ("Done")
 
-    def rocGraph(self):
-        rx= [0.5534, 0.3232, 0.1660, 0.132]
-        ry= [0.44, 0.88, 0.11, 0.23]
-        trace = go.Scatter(
-        x=rx,
-        y=ry
-        )
-        data=[trace]
-        plotly.offline.plot(data, filename="test")
+    def rocGraph(self, _file):
+        with open (_file, "r") as file:
+            xList=list()*27
+            yList=list()*27
+            for i, line in enumerate(file):
+                line = line.rstrip("\n")
+                tpr = line.split('\t')[7]
+                fpr = line.split('\t')[8]
+                xList.append(fpr)
+                yList.append(tpr)
+            trace1 = go.Scatter(
+            x=xList,
+            y=yList
+            )
+            trace2= go.Scatter(
+            x=[0,1],
+            y=[0,1]
+            )
+            data = [trace1,trace2]
+            layout = go.Layout(
+            xaxis=dict(type='linear', autorange=True),
+            yaxis=dict(type='linear', autorange=True)
+            )
+            fig=go.Figure(data=data, layout=layout)
+            plotly.offline.plot(fig)
