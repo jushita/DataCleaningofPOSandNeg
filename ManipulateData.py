@@ -273,16 +273,19 @@ class ManipulateData():
                 yList.append(tpr)
             trace1 = go.Scatter(
             x=xList,
-            y=yList
+            y=yList,
+            line=dict(color="navy"),name="ROC curve"
             )
             trace2= go.Scatter(
             x=[0,1],
-            y=[0,1]
+            y=[0,1],
+            line=dict(color="orange", dash="dash"),
+            showlegend=False
             )
             data = [trace1,trace2]
-            layout = go.Layout(
-            xaxis=dict(type='linear', autorange=True),
-            yaxis=dict(type='linear', autorange=True)
-            )
+            layout = go.Layout(title="Receiver operating Characteristic (ROC)",
+            xaxis=dict(type='linear',title="False Positive Rate",autorange=True),
+            yaxis=dict(type='linear',title="True Positive Rate", autorange=True))
+
             fig=go.Figure(data=data, layout=layout)
             plotly.offline.plot(fig)
