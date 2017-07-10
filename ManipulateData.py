@@ -105,8 +105,8 @@ class ManipulateData():
         print ("Done")
 
     def predictedLikelihoodRatioVal(self, _file):
-        values = [0.1,1,10,20,30,40,50,60,70,80,90,100,200,
-        300,400,500,600,700,800,900,1000,10000,20000,30000,40000,50000]
+        values = [0,0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.5,1,10,20,30,40,50,60,70,80,90,100,200,
+        300,400,500,600,700,800,900,1000,10000,20000,30000,40000,50000,80000]
         for val in values:
             newFile = open("predicted_likelihood_value_column_added_" + str(val) + ".txt", "w")
 
@@ -179,23 +179,25 @@ class ManipulateData():
                     newLine = line + "\t" + tn   #adding tp/fp/tn/fn to the previous line
                 #writing the final list
                 newFile.write(newLine + "\n")
+            print(tp_counter,fn_counter,fp_counter,tn_counter)
 
         print("Done!")
 
     def matrixCalculation(self, _files):
         #newFile = open("matrix_clc_col_added.txt" , "w")
         newFile_1 = open("counter_calculation.txt" , "w")
-        tp = 0
-        fn = 0
-        fp = 0
-        tn = 0
-        actual_yes = 0
-        actual_no = 0
-        tpr = 0
-        fpr = 0
+
         cm_lists = list()*len(_files)
         #storing each line of the file in a list then isolating 3rd and 5th column
         for _file in _files:
+            tp = 0
+            fn = 0
+            fp = 0
+            tn = 0
+            actual_yes = 0
+            actual_no = 0
+            tpr = 0
+            fpr = 0
             with open(_file, "r") as file:
                 for i, line in enumerate(file):
 
@@ -206,7 +208,7 @@ class ManipulateData():
                     predicted = line.split('\t')[4]
                 #checking which one is tp/fp/tn/fn
                     if (actual == "+ve" and predicted == "+ve"):
-                            tp += 1
+                        tp += 1
                     elif (actual == "+ve" and predicted == "-ve"):
                         fn += 1
                     elif (actual == "-ve" and predicted == "+ve"):
@@ -214,25 +216,21 @@ class ManipulateData():
                     else:
                         tn += 1
                         #newLine = line + "\t" + tn   #adding tp/fp/tn/fn to the previous line
-
+                print(tp,fn,fp,tn)
             actual_yes=tp+fn
             actual_no=fp+tn
             tpr = tp/actual_yes
             fpr = fp/actual_no
 
-
-
             cm_lists.append([str(tp), str(fn), str(fp), str(tn), str(actual_yes), str(actual_no), str(tpr),str(fpr)])
-
         for cm_list in cm_lists:
             newFile_1.write("\t".join(cm_list) + "\n")
 
         print("Done!")
     def valCol(self, _file):
         newFile=open("Confusion Matrix Table.txt","w")
-
-        values = ['0.1','1','10','20','30','40','50','60','70','80','90','100','200',
-        '300','400','500','600','700','800','900','1000','10000','20000','30000','40000','50000']
+        values = ['0','0.01','0.02','0.03','0.04','0.05','0.06','0.07','0.08','0.09','0.1','0.5','1','10','20','30','40','50','60','70','80','90','100','200',
+        '300','400','500','600','700','800','900','1000','10000','20000','30000','40000','50000','80000']
         with open(_file, "r") as file:
             for i, line in enumerate(file):
                 line = line.rstrip("\n")
