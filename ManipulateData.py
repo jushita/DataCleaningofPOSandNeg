@@ -105,8 +105,8 @@ class ManipulateData():
         print ("Done")
 
     def predictedLikelihoodRatioVal(self, _file):
-        values = [0,0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.5,1,10,20,30,40,50,60,70,80,90,100,200,
-        300,400,500,600,700,800,900,1000,10000,20000,30000,40000,50000,80000]
+        values = [0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,10,20,30,40,50,60,70,80,90,100,200,
+        300,400,500,600,700,800,900,1000,10000,20000,30000,40000,50000,79000]
         for val in values:
             newFile = open("predicted_likelihood_value_column_added_" + str(val) + ".txt", "w")
 
@@ -140,8 +140,10 @@ class ManipulateData():
 
         for file in glob.glob("predicted_likelihood_value_column_added_*.txt"):
             files.append(file)
+            files=sorted(files)
 
         return files
+        #print(files)
 
     def matrixCalculationCol(self, _file):
         newFile = open("matrix_clc_col_added.txt" , "w")
@@ -188,7 +190,7 @@ class ManipulateData():
         newFile_1 = open("counter_calculation.txt" , "w")
 
         cm_lists = list()*len(_files)
-        #storing each line of the file in a list then isolating 3rd and 5th column
+        #opening one file for each loop and re-initializing the counters
         for _file in _files:
             tp = 0
             fn = 0
@@ -198,6 +200,7 @@ class ManipulateData():
             actual_no = 0
             tpr = 0
             fpr = 0
+            #storing each line of the file in a list then isolating 3rd and 5th column
             with open(_file, "r") as file:
                 for i, line in enumerate(file):
 
@@ -216,28 +219,38 @@ class ManipulateData():
                     else:
                         tn += 1
                         #newLine = line + "\t" + tn   #adding tp/fp/tn/fn to the previous line
-                print(tp,fn,fp,tn)
             actual_yes=tp+fn
             actual_no=fp+tn
             tpr = tp/actual_yes
             fpr = fp/actual_no
 
             cm_lists.append([str(tp), str(fn), str(fp), str(tn), str(actual_yes), str(actual_no), str(tpr),str(fpr)])
+
         for cm_list in cm_lists:
             newFile_1.write("\t".join(cm_list) + "\n")
 
         print("Done!")
+
     def valCol(self, _file):
+        '''THIS FUNCTION ADDS THE LIKELIHOOD COLUMN TO THE FINAL OUTPUT FILE'''
+        #creating a new file
         newFile=open("Confusion Matrix Table.txt","w")
-        values = ['0','0.01','0.02','0.03','0.04','0.05','0.06','0.07','0.08','0.09','0.1','0.5','1','10','20','30','40','50','60','70','80','90','100','200',
-        '300','400','500','600','700','800','900','1000','10000','20000','30000','40000','50000','80000']
+        values = ['0.01','0.02','0.03','0.04','0.05','0.06','0.07','0.08','0.09','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1','10','100','1000','10000','20','200','20000','30','300','30000','40',
+        '400','40000','50','500','50000','60','600','70','700','80','800','79000','90','900']
+        #opening the file where we want the values to be added as the first column
         with open(_file, "r") as file:
             for i, line in enumerate(file):
+                #taking off \n from each line
                 line = line.rstrip("\n")
+                #splitting each lines into a list of elements where they are finding \t
                 split_line = line.split("\t")
+                #inserting the first column as values
                 split_line.insert(0, values[i])
+                #saving it into a separate list
                 saved=split_line
+                #joining the list and inserting "\t" between each element
                 newSaved="\t".join(saved)
+                #wriing the new variable with each line and entering new line at the end of each line
                 newFile.write(newSaved+"\n")
         print("DONE")
 
@@ -274,16 +287,16 @@ class ManipulateData():
             trace1 = go.Scatter(
             x=xList,
             y=yList,
-            line=dict(color="navy"),name="ROC curve"
+            line=dict(color="navy"),name='ROC curve(area = %0.2f)' % roc_auc[2]
             )
             trace2= go.Scatter(
-            x=[0,1],
-            y=[0,1],
+            x=[0,0.9611991],
+            y=[0,0.992],
             line=dict(color="orange", dash="dash"),
             showlegend=False
             )
             data = [trace1,trace2]
-            layout = go.Layout(title="Receiver operating Characteristic (ROC)",
+            layout = go.Layout(title="Receiver Operating Characteristic (ROC)",
             xaxis=dict(type='linear',title="False Positive Rate",autorange=True),
             yaxis=dict(type='linear',title="True Positive Rate", autorange=True))
 
