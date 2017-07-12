@@ -4,6 +4,7 @@ import plotly.figure_factory as ff
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 from plotly.graph_objs import *
 import plotly.graph_objs as go
+from operator import itemgetter
 
 plotly.offline.init_notebook_mode(connected=True)
 
@@ -105,10 +106,11 @@ class ManipulateData():
         print ("Done")
 
     def predictedLikelihoodRatioVal(self, _file):
-        values = [0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,10,20,30,40,50,60,70,80,90,100,200,
+        values = [0,0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,10,20,30,40,50,60,70,80,90,100,200,
         300,400,500,600,700,800,900,1000,10000,20000,30000,40000,50000,79000]
+
         for val in values:
-            newFile = open("predicted_likelihood_value_column_added_" + str(val) + ".txt", "w")
+            newFile = open("PL_" + str(val) + ".txt", "w")
 
             with open(_file, "r") as file:
 
@@ -138,7 +140,7 @@ class ManipulateData():
     def getPredeictedLikelihoodFiles(self):
         files = list()
 
-        for file in glob.glob("predicted_likelihood_value_column_added_*.txt"):
+        for file in glob.glob("PL_*.txt"):
             files.append(file)
             files=sorted(files)
 
@@ -235,8 +237,8 @@ class ManipulateData():
         '''THIS FUNCTION ADDS THE LIKELIHOOD COLUMN TO THE FINAL OUTPUT FILE'''
         #creating a new file
         newFile=open("Confusion Matrix Table.txt","w")
-        values = ['0.01','0.02','0.03','0.04','0.05','0.06','0.07','0.08','0.09','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1','10','100','1000','10000','20','200','20000','30','300','30000','40',
-        '400','40000','50','500','50000','60','600','70','700','80','800','79000','90','900']
+        values = ['0.01','0.02','0.03','0.04','0.05','0.06','0.07','0.08','0.09','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','0','1','10','100',
+        '1000','10000','20','200','20000','30','300','30000','40', '400','40000','50','500','50000','60','600','70','700','79000','80','800','90','900']
         #opening the file where we want the values to be added as the first column
         with open(_file, "r") as file:
             for i, line in enumerate(file):
@@ -254,7 +256,25 @@ class ManipulateData():
                 newFile.write(newSaved+"\n")
         print("DONE")
 
+    def sortConfusionMatrices(self,_file):
+        newFile=open("Confusion Matrix Table (Sorted).txt","w")
+        listofMatrix=list()*45
+        with open(_file, "r") as file:
+            for i, line in enumerate(file):
+                #taking off \n from each line
+                line = line.rstrip("\n")
+                #splitting each lines into a list of elements where they are finding \t
+                split_line = line.split("\t")
+                listofMatrix.append(split_line)
+
+            l=sorted(listofMatrix, key=itemgetter(0))
+            for each in l:
+                newSaved="\t".join(each)
+                newFile.write(newSaved+ "\n")
+
+
     def plotlyTable(self, _file):
+        '''THIS FUNCTION CREATES THE PLOTLY TABLE'''
         new_list= list()*len(_file)
         print(len(_file))
         first_line ='Likelihood\t'  'True Positive (TP)\t'   'False Negative (FN)\t'   'False Positive (FP)\t'   'True Negative (TN)\t'    'Actual Yes\t'    'Actual No\t' 'True Posive Rate (TPR)\t'    'False Positive Rate (FPR)\n'
@@ -287,11 +307,11 @@ class ManipulateData():
             trace1 = go.Scatter(
             x=xList,
             y=yList,
-            line=dict(color="navy"),name='ROC curve(area = %0.2f)' % roc_auc[2]
+            line=dict(color="navy"),name='ROC curve'
             )
             trace2= go.Scatter(
-            x=[0,0.9611991],
-            y=[0,0.992],
+            x=[0,1],
+            y=[0,1],
             line=dict(color="orange", dash="dash"),
             showlegend=False
             )
