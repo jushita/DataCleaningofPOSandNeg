@@ -332,6 +332,8 @@ class ManipulateData():
     def auc(self,_file):
         x=list()*45
         y=list()*45
+        nx=list()*45
+        ny=list()*45
         with open(_file, "r") as file:
             for i, line in enumerate(file):
                 #taking off \n from each line
@@ -342,5 +344,9 @@ class ManipulateData():
                 x.append(split_line[8])
                 split_line[7] = float(split_line[7])
                 y.append(split_line[7])
-            area = trapz(y, x)
-            print("area =", area*(-1))
+            for i in reversed(x):
+                nx.append(i)
+            for j in reversed(y):
+                ny.append(j)
+            area = trapz(ny, nx)
+            print("area =", area)
