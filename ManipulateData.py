@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os, glob
 import plotly
 import plotly.figure_factory as ff
@@ -5,6 +6,9 @@ from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 from plotly.graph_objs import *
 import plotly.graph_objs as go
 from operator import itemgetter
+import numpy as np
+from scipy.integrate import simps
+from numpy import trapz
 
 plotly.offline.init_notebook_mode(connected=True)
 
@@ -324,3 +328,19 @@ class ManipulateData():
 
             fig=go.Figure(data=data, layout=layout)
             plotly.offline.plot(fig)
+
+    def auc(self,_file):
+        x=list()*45
+        y=list()*45
+        with open(_file, "r") as file:
+            for i, line in enumerate(file):
+                #taking off \n from each line
+                line = line.rstrip("\n")
+                #splitting each lines into a list of elements where they are finding \t
+                split_line = line.split("\t")
+                split_line[8] = float(split_line[8])
+                x.append(split_line[8])
+                split_line[7] = float(split_line[7])
+                y.append(split_line[7])
+            area = trapz(y, x)
+            print("area =", area*(-1))
