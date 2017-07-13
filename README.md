@@ -1,7 +1,6 @@
 # Computation of Confusion Matrices for Likelihood Values of protein pairs.
 # Computation of ROC and corresponding AUC from the calculated Confusion Matrices
 
-
 This program:
 1. Cleans data obtained from Gold Standard Dataset by Jansen and Co-workers
 2. Calculates Likelihood ratio for a set of positive and negative Dataset
