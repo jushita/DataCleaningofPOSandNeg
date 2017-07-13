@@ -1,9 +1,15 @@
+from __future__ import print_function
 import os, glob
 import plotly
 import plotly.figure_factory as ff
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 from plotly.graph_objs import *
 import plotly.graph_objs as go
+from operator import itemgetter
+import numpy as np
+from scipy.integrate import simps
+from numpy import trapz
+import collections
 
 plotly.offline.init_notebook_mode(connected=True)
 
@@ -105,10 +111,11 @@ class ManipulateData():
         print ("Done")
 
     def predictedLikelihoodRatioVal(self, _file):
-        values = [0.1,1,10,20,30,40,50,60,70,80,90,100,200,
-        300,400,500,600,700,800,900,1000,10000,20000,30000,40000,50000]
+        values = [0,0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,10,20,30,40,50,60,70,80,90,100,200,
+        300,400,500,600,700,800,900,1000,10000,20000,30000,40000,50000,79000]
+
         for val in values:
-            newFile = open("predicted_likelihood_value_column_added_" + str(val) + ".txt", "w")
+            newFile = open("PL_" + str(val) + ".txt", "w")
 
             with open(_file, "r") as file:
 
@@ -138,10 +145,12 @@ class ManipulateData():
     def getPredeictedLikelihoodFiles(self):
         files = list()
 
-        for file in glob.glob("predicted_likelihood_value_column_added_*.txt"):
+        for file in glob.glob("PL_*.txt"):
             files.append(file)
+            files=sorted(files)
 
         return files
+        #print(files)
 
     def matrixCalculationCol(self, _file):
         newFile = open("matrix_clc_col_added.txt" , "w")
@@ -177,34 +186,28 @@ class ManipulateData():
                     tn = "TN"
                     tn_counter += 1
                     newLine = line + "\t" + tn   #adding tp/fp/tn/fn to the previous line
-
                 #writing the final list
                 newFile.write(newLine + "\n")
-
-            #storing value of each in a list
-
-            print (tp_counter)
-            print (tn_counter)
-            print (fn_counter)
-            print(fp_counter)
+            print(tp_counter,fn_counter,fp_counter,tn_counter)
 
         print("Done!")
 
     def matrixCalculation(self, _files):
         #newFile = open("matrix_clc_col_added.txt" , "w")
         newFile_1 = open("counter_calculation.txt" , "w")
-        tp = 0
-        fn = 0
-        fp = 0
-        tn = 0
-        actual_yes = 0
-        actual_no = 0
-        tpr = 0
-        fpr = 0
-        cm_lists = list()*len(_files)
 
-        #storing each line of the file in a list then isolating 3rd and 5th column
+        cm_lists = list()*len(_files)
+        #opening one file for each loop and re-initializing the counters
         for _file in _files:
+            tp = 0
+            fn = 0
+            fp = 0
+            tn = 0
+            actual_yes = 0
+            actual_no = 0
+            tpr = 0
+            fpr = 0
+            #storing each line of the file in a list then isolating 3rd and 5th column
             with open(_file, "r") as file:
                 for i, line in enumerate(file):
 
@@ -215,7 +218,7 @@ class ManipulateData():
                     predicted = line.split('\t')[4]
                 #checking which one is tp/fp/tn/fn
                     if (actual == "+ve" and predicted == "+ve"):
-                            tp += 1
+                        tp += 1
                     elif (actual == "+ve" and predicted == "-ve"):
                         fn += 1
                     elif (actual == "-ve" and predicted == "+ve"):
@@ -223,7 +226,6 @@ class ManipulateData():
                     else:
                         tn += 1
                         #newLine = line + "\t" + tn   #adding tp/fp/tn/fn to the previous line
-
             actual_yes=tp+fn
             actual_no=fp+tn
             tpr = tp/actual_yes
@@ -236,9 +238,53 @@ class ManipulateData():
 
         print("Done!")
 
+    def valCol(self, _file):
+        '''THIS FUNCTION ADDS THE LIKELIHOOD COLUMN TO THE FINAL OUTPUT FILE'''
+        #creating a new file
+        newFile=open("Confusion Matrix Table.txt","w")
+        values = ['0.01','0.02','0.03','0.04','0.05','0.06','0.07','0.08','0.09','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','0','1','10','100',
+        '1000','10000','20','200','20000','30','300','30000','40', '400','40000','50','500','50000','60','600','70','700','79000','80','800','90','900']
+        #opening the file where we want the values to be added as the first column
+        with open(_file, "r") as file:
+            for i, line in enumerate(file):
+                #taking off \n from each line
+                line = line.rstrip("\n")
+                #splitting each lines into a list of elements where they are finding \t
+                split_line = line.split("\t")
+                #inserting the first column as values
+                split_line.insert(0, values[i])
+                #saving it into a separate list
+                saved=split_line
+                #joining the list and inserting "\t" between each element
+                newSaved="\t".join(saved)
+                #wriing the new variable with each line and entering new line at the end of each line
+                newFile.write(newSaved+"\n")
+        print("DONE")
+
+    def sortConfusionMatrices(self,_file):
+        newFile=open("Confusion Matrix Table (Sorted).txt","w")
+        listofMatrix=list()*45
+        with open(_file, "r") as file:
+            for i, line in enumerate(file):
+                #taking off \n from each line
+                line = line.rstrip("\n")
+                #splitting each lines into a list of elements where they are finding \t
+                split_line = line.split("\t")
+                split_line[0] = float(split_line[0])
+                listofMatrix.append(split_line)
+
+            l=sorted(listofMatrix, key=itemgetter(0))
+            for each in l:
+                each[0] = str(each[0])
+                newSaved="\t".join(each)
+                newFile.write(newSaved+ "\n")
+
+
     def plotlyTable(self, _file):
+        '''THIS FUNCTION CREATES THE PLOTLY TABLE'''
         new_list= list()*len(_file)
-        first_line ='Values\t' 'True Positive (TP)\t'   'False Negative (FN)\t'   'False Positive (FP)\t'   'True Negative (TN)\t'    'Actual Yes\t'    'Actual No\t' 'True Posive Rate (TPR)\t'    'False Positive Rate (FPR)\n'
+        print(len(_file))
+        first_line ='Likelihood\t'  'True Positive (TP)\t'   'False Negative (FN)\t'   'False Positive (FP)\t'   'True Negative (TN)\t'    'Actual Yes\t'    'Actual No\t' 'True Posive Rate (TPR)\t'    'False Positive Rate (FPR)\n'
         first_line = first_line.rstrip("\n")
         first_line=first_line.split("\t")
 
@@ -248,18 +294,62 @@ class ManipulateData():
                 #print (line)
                 line = line.rstrip("\n")
                 line = line.split("\t")
-                data_matrix.append(line)
+                new_list.append(line)
+            data_matrix=new_list
 
         table = ff.create_table(data_matrix)
         plotly.offline.plot(table, filename='Confusion Matrix Values')
         print ("Done")
 
-    def rocGraph(self):
-        rx= [0.5534, 0.3232, 0.1660, 0.132]
-        ry= [0.44, 0.88, 0.11, 0.23]
-        trace = go.Scatter(
-        x=rx,
-        y=ry
-        )
-        data=[trace]
-        plotly.offline.plot(data, filename="test")
+    def rocGraph(self, _file):
+        with open (_file, "r") as file:
+            xList=list()*27
+            yList=list()*27
+            for i, line in enumerate(file):
+                line = line.rstrip("\n")
+                tpr = line.split('\t')[7]
+                fpr = line.split('\t')[8]
+                xList.append(fpr)
+                yList.append(tpr)
+            trace1 = go.Scatter(
+            x=xList,
+            y=yList,
+            line=dict(color="navy"),name='ROC curve'
+            )
+            trace2= go.Scatter(
+            x=[0,1],
+            y=[0,1],
+            line=dict(color="orange", dash="dash"),
+            showlegend=False
+            )
+            data = [trace1,trace2]
+            layout = go.Layout(title="Receiver Operating Characteristic (ROC)",
+            xaxis=dict(type='linear',title="False Positive Rate",autorange=True),
+            yaxis=dict(type='linear',title="True Positive Rate", autorange=True))
+
+            fig=go.Figure(data=data, layout=layout)
+            plotly.offline.plot(fig)
+
+    def auc(self,_file):
+        x=list()*45
+        y=list()*45
+        new_dict=dict()
+        with open(_file, "r") as file:
+            for i, line in enumerate(file):
+                #taking off \n from each line
+                line = line.rstrip("\n")
+                #splitting each lines into a list of elements where they are finding \t
+                split_line = line.split("\t")
+                fpr = float(split_line[8])
+                tpr = float(split_line[7])
+                new_dict[fpr]=tpr
+            o_new_dict = collections.OrderedDict(sorted(new_d))
+            #print (new_dict)
+            '''
+            for i in reversed(x):
+                nx.append(i)
+            for j in reversed(y):
+                ny.append(j)
+            area = trapz(ny, nx)
+            print("area =", area)
+            '''
