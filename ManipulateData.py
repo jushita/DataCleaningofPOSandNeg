@@ -9,6 +9,7 @@ from operator import itemgetter
 import numpy as np
 from scipy.integrate import simps
 from numpy import trapz
+import collections
 
 plotly.offline.init_notebook_mode(connected=True)
 
@@ -332,21 +333,23 @@ class ManipulateData():
     def auc(self,_file):
         x=list()*45
         y=list()*45
-        nx=list()*45
-        ny=list()*45
+        new_dict=dict()
         with open(_file, "r") as file:
             for i, line in enumerate(file):
                 #taking off \n from each line
                 line = line.rstrip("\n")
                 #splitting each lines into a list of elements where they are finding \t
                 split_line = line.split("\t")
-                split_line[8] = float(split_line[8])
-                x.append(split_line[8])
-                split_line[7] = float(split_line[7])
-                y.append(split_line[7])
+                fpr = float(split_line[8])
+                tpr = float(split_line[7])
+                new_dict[fpr]=tpr
+            o_new_dict = collections.OrderedDict(sorted(new_d))
+            #print (new_dict)
+            '''
             for i in reversed(x):
                 nx.append(i)
             for j in reversed(y):
                 ny.append(j)
             area = trapz(ny, nx)
             print("area =", area)
+            '''
