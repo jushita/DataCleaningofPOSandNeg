@@ -265,10 +265,12 @@ class ManipulateData():
                 line = line.rstrip("\n")
                 #splitting each lines into a list of elements where they are finding \t
                 split_line = line.split("\t")
+                split_line[0] = float(split_line[0])
                 listofMatrix.append(split_line)
 
             l=sorted(listofMatrix, key=itemgetter(0))
             for each in l:
+                each[0] = str(each[0])
                 newSaved="\t".join(each)
                 newFile.write(newSaved+ "\n")
 

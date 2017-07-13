@@ -32,8 +32,8 @@ manipulate.valCol("counter_calculation.txt")
 
 manipulate.sortConfusionMatrices("Confusion Matrix Table.txt")
 '''
-manipulate.plotlyTable("Confusion Matrix Table - Copy.txt")
+manipulate.plotlyTable("Confusion Matrix Table (Sorted).txt")
 
-manipulate.rocGraph("Confusion Matrix Table - Copy.txt")
+manipulate.rocGraph("Confusion Matrix Table (Sorted).txt")
 
 #manipulate.getPredeictedLikelihoodFiles()
