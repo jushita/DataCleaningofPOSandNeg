@@ -1,6 +1,4 @@
-# Computation of Confusion Matrices for Likelihood Values of protein pairs.
-# Computation of ROC and corresponding AUC from the calculated Confusion Matrices
-
+# Measure of Performance of Classifiers:
 This program:
 1. Cleans data obtained from Gold Standard Dataset by Jansen and Co-workers
 2. Calculates Likelihood ratio for a set of positive and negative Dataset
@@ -9,4 +7,4 @@ This program:
 5. Constructs the Confusion Matrix Table using plot.ly API
 6. Computes the ROC curve using plot.ly API
 7. Computes AUC (Area Under Curve) using numpy
-The data set used here is the Gold Standard Dataset by Jansen and Co-workers  
+#The data set used here is the Gold Standard Dataset by Jansen and Co-workers  

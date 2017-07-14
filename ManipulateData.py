@@ -301,7 +301,27 @@ class ManipulateData():
         plotly.offline.plot(table, filename='Confusion Matrix Values')
         print ("Done")
 
-    def rocGraph(self, _file):
+    def roc_auc(self, _file):
+        '''Calculating auc'''
+        x=list()*45
+        y=list()*45
+        new_dict=dict()
+        with open(_file, "r") as file:
+            for i, line in enumerate(file):
+                #taking off \n from each line
+                line = line.rstrip("\n")
+                #splitting each lines into a list of elements where they are finding \t
+                split_line = line.split("\t")
+                fpr = float(split_line[8])
+                tpr = float(split_line[7])
+                new_dict[fpr]=tpr
+            new_dict= collections.OrderedDict(sorted(new_dict.items()))
+            for key, value in new_dict.items():
+                x.append(key)
+                y.append(value)
+            area = trapz(y, x)
+            area =  str(area)
+        '''Plotting ROC'''
         with open (_file, "r") as file:
             xList=list()*27
             yList=list()*27
@@ -320,7 +340,7 @@ class ManipulateData():
             x=[0,1],
             y=[0,1],
             line=dict(color="orange", dash="dash"),
-            showlegend=False
+            name='AUC = %s' % (area)
             )
             data = [trace1,trace2]
             layout = go.Layout(title="Receiver Operating Characteristic (ROC)",
@@ -329,27 +349,3 @@ class ManipulateData():
 
             fig=go.Figure(data=data, layout=layout)
             plotly.offline.plot(fig)
-
-    def auc(self,_file):
-        x=list()*45
-        y=list()*45
-        new_dict=dict()
-        with open(_file, "r") as file:
-            for i, line in enumerate(file):
-                #taking off \n from each line
-                line = line.rstrip("\n")
-                #splitting each lines into a list of elements where they are finding \t
-                split_line = line.split("\t")
-                fpr = float(split_line[8])
-                tpr = float(split_line[7])
-                new_dict[fpr]=tpr
-            o_new_dict = collections.OrderedDict(sorted(new_d))
-            #print (new_dict)
-            '''
-            for i in reversed(x):
-                nx.append(i)
-            for j in reversed(y):
-                ny.append(j)
-            area = trapz(ny, nx)
-            print("area =", area)
-            '''
