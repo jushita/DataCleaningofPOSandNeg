@@ -1,5 +1,4 @@
 # Measure of Performance of Classifiers:
-
 This program:
 1. Cleans data obtained from Gold Standard Dataset by Jansen and Co-workers
 2. Calculates Likelihood ratio for a set of positive and negative Dataset
