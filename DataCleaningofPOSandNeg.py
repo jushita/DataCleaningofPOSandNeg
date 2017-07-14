@@ -15,8 +15,8 @@ manipulate.columnSplit("L_neg.txt", "negatives")
 manipulate.addCommonColumn("positives.txt", "+ve")
 manipulate.addCommonColumn("negatives.txt", "-ve")
 
-manipulate.rowSplit("positives.txt", 500, 1)
-manipulate.rowSplit("negatives.txt", 150000, 1)
+manipulate.rowSplit("positives.txt", 500, 16)
+manipulate.rowSplit("negatives.txt", 150000, 16)
 
 manipulate.combineFiles("positives_500_1.txt", "negatives_150000_1.txt")
 

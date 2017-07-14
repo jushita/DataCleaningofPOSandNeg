@@ -8,4 +8,11 @@ This program:
 5. Constructs the Confusion Matrix Table using plot.ly API
 6. Computes the ROC curve using plot.ly API
 7. Computes AUC (Area Under Curve) using numpy
+<br />
 #The data set used here is the Gold Standard Dataset by Jansen and Co-workers  
+<br />
+
+## Requirements:
+1. Python 3.6.0 | Anaconda 4.3.1
+2. pip install plotly
+3. pip install numpy
