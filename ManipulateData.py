@@ -343,13 +343,9 @@ class ManipulateData():
                 fpr = float(split_line[8])
                 tpr = float(split_line[7])
                 new_dict[fpr]=tpr
-            o_new_dict = collections.OrderedDict(sorted(new_d))
-            #print (new_dict)
-            '''
-            for i in reversed(x):
-                nx.append(i)
-            for j in reversed(y):
-                ny.append(j)
-            area = trapz(ny, nx)
+            new_dict= collections.OrderedDict(sorted(new_dict.items()))
+            for key, value in new_dict.items():
+                x.append(key)
+                y.append(value)
+            area = trapz(y, x)
             print("area =", area)
-            '''
